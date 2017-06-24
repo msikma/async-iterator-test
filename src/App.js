@@ -13,7 +13,7 @@ const asyncNumber = () => {
 }
 
 async function* getAsyncNumber() {
-  yield await asyncNumber;
+  yield await asyncNumber();
 }
 
 class App extends Component {
@@ -22,21 +22,29 @@ class App extends Component {
     this.state = {
       lines: []
     };
+    this.runSomething();
+  }
+  async runSomething() {
     // Let's have a look...
-    const numberGetter = getAsyncNumber();
-    const a = numberGetter.next();
-    console.log(a.value);
+    console.log('Running async...');
+    while (true) {
+      const numberGetter = getAsyncNumber();
+      const a = await numberGetter.next();
+      this.setState({ lines: [...this.state.lines, a.value] });
+    };
   }
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      <div>
+        <div className="App">
+          <div className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <h2>Welcome to React</h2>
+          </div>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <ul>
+          { this.state.lines.map((n, m) => <li key={ m }>{ n }</li>)}
+        </ul>
       </div>
     );
   }
